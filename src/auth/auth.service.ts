@@ -9,7 +9,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 
 /** Custom DTOs */
-import { AuthDto } from './auth.dto';
+import { AuthDto } from './dto/auth.dto';
 
 /** Custom Services */
 import { UsersService } from './users/users.service';
