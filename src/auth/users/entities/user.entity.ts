@@ -1,10 +1,9 @@
 import {
   IsBoolean,
   IsEmail,
-  IsEmpty,
   IsNotEmpty,
   IsString,
-  Validate,
+  IsOptional,
 } from 'class-validator';
 import { IsEmailUnique } from './is-email-uniqe.validator';
 
@@ -15,17 +14,18 @@ export class User {
 
   @IsNotEmpty()
   @IsEmail()
-  @Validate(IsEmailUnique)
+  @IsEmailUnique()
   email: string;
 
   @IsNotEmpty()
   @IsString()
   password: string;
 
+  @IsOptional()
   @IsBoolean()
-  @IsEmpty()
   status: boolean;
 
+  @IsOptional()
   @IsString()
   refresh_token?: string;
 }

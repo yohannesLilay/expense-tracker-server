@@ -12,6 +12,9 @@ import { User, UserDocument } from './users.schema';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
+/** Constants */
+import { RolesEnum } from 'src/constants/rolesEnum';
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -35,6 +38,7 @@ export class UsersService {
     const hashedPassword = await this.hashPassword(createUserDto.password);
     return await new this.userModel({
       ...createUserDto,
+      role: RolesEnum.STANDARD,
       password: hashedPassword,
     }).save();
   }
