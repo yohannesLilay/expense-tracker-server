@@ -5,10 +5,10 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcryptjs';
 
-/** Custom Schemas */
+/** Schemas */
 import { User, UserDocument } from './users.schema';
 
-/** Custom DTOs */
+/** DTOs */
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 

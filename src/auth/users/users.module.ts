@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 /** Services */
@@ -19,4 +19,5 @@ import { User, UserSchema } from './users.schema';
   ],
   exports: [UsersService],
 })
+@Global()
 export class UsersModule {}

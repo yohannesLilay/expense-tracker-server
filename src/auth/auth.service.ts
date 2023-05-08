@@ -13,11 +13,13 @@ import { AuthDto } from './dto/auth.dto';
 
 /** Custom Services */
 import { UsersService } from './users/users.service';
+import { SettingsService } from 'src/settings/settings.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
+    private settingsService: SettingsService,
     private jwtService: JwtService,
   ) {}
 
@@ -40,13 +42,17 @@ export class AuthService {
     const tokens = await this.getTokens(user.id, user.email);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
+    // Check if the user has settings configured
+    const setting = await this.settingsService.findByUser(user.id);
+
     return {
-      accessToken: 'Bearer ' + tokens.accessToken,
-      refreshToken: tokens.refreshToken,
+      access_token: 'Bearer ' + tokens.accessToken,
+      refresh_token: tokens.refreshToken,
       userId: user.id,
       email: user.email,
       name: user.name,
       roles: user.role,
+      setting_configured: setting ? 'yes' : 'no',
     };
   }
 
@@ -65,7 +71,7 @@ export class AuthService {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
-          sub: userId,
+          user_id: userId,
           email,
         },
         {
@@ -76,7 +82,7 @@ export class AuthService {
 
       this.jwtService.signAsync(
         {
-          sub: userId,
+          user_id: userId,
           email,
         },
         {

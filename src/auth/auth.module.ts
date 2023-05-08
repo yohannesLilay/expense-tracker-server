@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 
 /** Controllers */
@@ -25,4 +25,5 @@ import { UsersModule } from './users/users.module';
     RolesGuard,
   ],
 })
+@Global()
 export class AuthModule {}

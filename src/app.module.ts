@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 /** Custom Modules */
 import { AuthModule } from './auth/auth.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AuthModule } from './auth/auth.module';
       }`,
     ),
     AuthModule,
+    SettingsModule,
   ],
   controllers: [],
   providers: [],

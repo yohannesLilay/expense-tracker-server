@@ -9,16 +9,16 @@ import {
   Patch,
 } from '@nestjs/common';
 
-/** Custom Guards */
+/** Guards */
 import { AccessTokenGuard } from 'src/auth/common/guards/access-token.guard';
 import { RolesGuard } from 'src/auth/common/guards/roles.guard';
 import { Roles } from '../common/roles.decorator';
 
-/** Custom DTOs */
+/** DTOs */
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
-/** Custom Services */
+/** Services */
 import { UsersService } from './users.service';
 
 @UseGuards(AccessTokenGuard, RolesGuard)
