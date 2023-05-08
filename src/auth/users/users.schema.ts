@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import * as bcrypt from 'bcryptjs';
 
 /** Constants */
 import { RolesEnum } from 'src/constants/rolesEnum';
@@ -39,6 +40,23 @@ export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.virtual('id').get(function () {
   return this._id.toString();
+});
+
+UserSchema.pre('save', async function (next: any) {
+  try {
+    if (!this.isModified('password')) {
+      return next();
+    }
+    const hashedPassword = await bcrypt.hash(
+      this.password,
+      parseInt(process.env.SALT_ROUND),
+    );
+    this.password = hashedPassword;
+
+    return next();
+  } catch (error) {
+    return next(error);
+  }
 });
 
 UserSchema.set('toJSON', {
