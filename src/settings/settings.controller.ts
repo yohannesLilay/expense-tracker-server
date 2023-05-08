@@ -47,8 +47,11 @@ export class SettingsController {
 
   @Post()
   @Roles('ADMIN', 'STANDARD')
-  async create(@Body() createSettingDto: CreateSettingDto) {
-    return await this.settingsService.create(createSettingDto);
+  async create(
+    @Body() createSettingDto: CreateSettingDto,
+    @Request() req: any,
+  ) {
+    return await this.settingsService.create(createSettingDto, req.user.id);
   }
 
   @Patch(':id')

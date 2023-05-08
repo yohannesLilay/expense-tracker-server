@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
@@ -28,9 +28,19 @@ export class SettingsService {
     return await this.settingModel.findOne({ user }).exec();
   }
 
-  async create(createSettingDto: CreateSettingDto): Promise<Setting> {
+  async create(
+    createSettingDto: CreateSettingDto,
+    userId: string,
+  ): Promise<Setting> {
+    const user = await this.findByUser(userId);
+    if (user)
+      throw new BadRequestException(
+        'Invalid input: user already have settings configured',
+      );
+
     return await new this.settingModel({
       ...createSettingDto,
+      user: userId,
     }).save();
   }
 

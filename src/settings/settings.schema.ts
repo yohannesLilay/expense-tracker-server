@@ -21,6 +21,7 @@ export class Setting {
     type: MongooseSchema.Types.ObjectId,
     ref: 'User',
     required: true,
+    unique: true,
   })
   user: User;
 
