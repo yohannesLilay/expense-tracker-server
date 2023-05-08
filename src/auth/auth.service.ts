@@ -15,6 +15,9 @@ import { AuthDto } from './dto/auth.dto';
 import { UsersService } from './users/users.service';
 import { SettingsService } from 'src/settings/settings.service';
 
+/** Schema */
+import { User } from './users/users.schema';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -39,7 +42,7 @@ export class AuthService {
         'Unable to authenticate with provided credentials.',
       );
 
-    const tokens = await this.getTokens(user.id, user.email);
+    const tokens = await this.getTokens(user);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     // Check if the user has settings configured
@@ -67,12 +70,13 @@ export class AuthService {
     });
   }
 
-  async getTokens(userId: string, email: string) {
+  async getTokens(user: User) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
-          user_id: userId,
-          email,
+          user_id: user.id,
+          email: user.email,
+          role: user.role,
         },
         {
           secret: process.env.ACCESS_TOKEN_SECRET,
@@ -82,8 +86,9 @@ export class AuthService {
 
       this.jwtService.signAsync(
         {
-          user_id: userId,
-          email,
+          user_id: user.id,
+          email: user.email,
+          role: user.role,
         },
         {
           secret: process.env.REFRESH_TOKEN_SECRET,
@@ -109,7 +114,7 @@ export class AuthService {
     );
     if (!refreshTokenMatches) throw new ForbiddenException('Access Denied');
 
-    const tokens = await this.getTokens(user.id, user.email);
+    const tokens = await this.getTokens(user);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
 
     return {

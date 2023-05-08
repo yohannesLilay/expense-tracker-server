@@ -1,13 +1,9 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { UsersService } from 'src/auth/users/users.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(
-    private readonly reflector: Reflector,
-    private readonly usersService: UsersService,
-  ) {}
+  constructor(private readonly reflector: Reflector) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const requiredRoles = this.reflector.get<string[]>(
@@ -18,9 +14,8 @@ export class RolesGuard implements CanActivate {
     if (!requiredRoles) return true;
 
     const { user } = context.switchToHttp().getRequest();
-    const userData = await this.usersService.findByEmail(user.email);
 
-    if (!requiredRoles.includes(userData.role)) return false;
+    if (!requiredRoles.includes(user.role)) return false;
 
     return true;
   }
