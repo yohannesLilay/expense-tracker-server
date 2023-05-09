@@ -13,6 +13,9 @@ import { IsValidExpenseReasonValidator } from './entities/is-valid-expense-reaso
 /** Schemas */
 import { ExpenseData, ExpenseDataSchema } from './expense-data.schema';
 
+/** Other Modules */
+import { ExpenseReasonsModule } from 'src/configurations/expense-reasons/expense-reasons.module';
+
 @Module({
   controllers: [ExpenseDataController],
   providers: [ExpenseDataService, IsValidExpenseReasonValidator],
@@ -20,6 +23,7 @@ import { ExpenseData, ExpenseDataSchema } from './expense-data.schema';
     MongooseModule.forFeature([
       { name: ExpenseData.name, schema: ExpenseDataSchema },
     ]),
+    ExpenseReasonsModule,
   ],
   exports: [ExpenseDataService],
 })
