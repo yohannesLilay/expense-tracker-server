@@ -44,6 +44,95 @@ export class ExpenseDataService {
       .exec();
   }
 
+  async expenseSumByMonth(userId: string, reasonId: string): Promise<any> {
+    const currentYear = new Date().getFullYear();
+
+    return await this.expenseDataModel.aggregate([
+      {
+        $match: {
+          user: userId,
+          expense_reason: {
+            $cond: {
+              if: { $eq: [reasonId, null] },
+              then: { $exists: true },
+              else: reasonId,
+            },
+          },
+          date: {
+            $gte: new Date(currentYear, 0, 1),
+            $lte: new Date(currentYear, 11, 31),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: '$date' },
+          totalAmount: { $sum: '$amount' },
+        },
+      },
+      {
+        $sort: {
+          _id: 1, // Sort by month in ascending order
+        },
+      },
+    ]);
+  }
+
+  async generalExpenseReport(
+    userId: string,
+    reasonId: string,
+    startDate: Date,
+    endDate: Date,
+  ) {
+    const listExpenseData = await this.expenseDataModel
+      .find({
+        user: userId,
+        expense_reason: {
+          $cond: {
+            if: { $eq: [reasonId, null] },
+            then: { $exists: true },
+            else: reasonId,
+          },
+        },
+        date: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate),
+        },
+      })
+      .sort({ createdAt: -1 })
+      .exec();
+
+    const totalExpenseAmount = await this.expenseDataModel.aggregate([
+      {
+        $match: {
+          user: userId,
+          expense_reason: {
+            $cond: {
+              if: { $eq: [reasonId, null] },
+              then: { $exists: true },
+              else: reasonId,
+            },
+          },
+          date: {
+            $gte: new Date(startDate),
+            $lte: new Date(endDate),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalAmount: { $sum: '$amount' },
+        },
+      },
+    ]);
+
+    return {
+      expenses_list: listExpenseData,
+      total_expense: totalExpenseAmount,
+    };
+  }
+
   async create(
     createExpenseDatumDto: CreateExpenseDatumDto,
     userId: string,

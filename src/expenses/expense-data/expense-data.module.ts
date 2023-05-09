@@ -21,5 +21,6 @@ import { ExpenseData, ExpenseDataSchema } from './expense-data.schema';
       { name: ExpenseData.name, schema: ExpenseDataSchema },
     ]),
   ],
+  exports: [ExpenseDataService],
 })
 export class ExpenseDataModule {}
